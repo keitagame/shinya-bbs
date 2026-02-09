@@ -231,7 +231,8 @@ def index():
     
     content = f'''
     <div class="notice">深夜テンションの猫が集まる匿名掲示板です</div>
-    
+    <h2>アクセスカウンタ</h2>
+    <img src="http://moecounter.atserver186.jp/@:name" alt=":name" />
     <h2>板一覧</h2>
     <div class="thread-list">
       {thread_list_html}
