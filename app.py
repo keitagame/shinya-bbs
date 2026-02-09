@@ -253,7 +253,7 @@ def entrance():
       誹謗中傷・違法行為は禁止されています。<br>
       書き込み内容は自己責任でお願いします。
     </div>
-
+    <img src="https://keitagames.com/shinya-tension/bbs.png" width="400"/>
     <form method="POST">
       <p style="text-align:center;">
         <button type="submit" style="font-size:16px;padding:8px 24px;">
