@@ -28,161 +28,162 @@ posts = {
     ]
 }
 
-# HTMLテンプレート
-HTML_TEMPLATE = '''<!DOCTYPE html>
+# 共通のHTMLヘッダーとフッター
+def render_page(content, boards_dict):
+    return f'''<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
   <title>SHINYA BBS</title>
   <style>
-    body {
+    body {{
       font-family: "MS PGothic", "Hiragino Kaku Gothic ProN", sans-serif;
       background: #efefef;
       margin: 0;
-    }
-    a { color: #0000cc; text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    }}
+    a {{ color: #0000cc; text-decoration: none; }}
+    a:hover {{ text-decoration: underline; }}
 
-    header {
+    header {{
       background: #0055aa;
       color: #fff;
       padding: 8px 16px;
       font-weight: bold;
       font-size: 18px;
-    }
+    }}
 
-    #layout {
+    #layout {{
       max-width: 1100px;
       margin: 0 auto;
       background: #fff;
       display: flex;
-    }
+    }}
 
-    aside {
+    aside {{
       width: 220px;
       border-right: 1px solid #ccc;
       background: #f7f7f7;
       padding: 8px;
       font-size: 14px;
-    }
-    aside h3 {
+    }}
+    aside h3 {{
       margin: 8px 0 4px;
       font-size: 14px;
       border-bottom: 1px solid #aaa;
-    }
-    .board-list div {
+    }}
+    .board-list div {{
       padding: 2px 0;
-    }
+    }}
 
-    main {
+    main {{
       flex: 1;
       padding: 12px;
-    }
+    }}
 
-    .thread-list {
+    .thread-list {{
       border: 1px solid #ccc;
       margin-bottom: 16px;
-    }
-    .thread-list .row {
+    }}
+    .thread-list .row {{
       padding: 6px;
       border-bottom: 1px dotted #999;
       font-size: 14px;
-    }
-    .thread-list .row:last-child { border-bottom: none; }
-    .thread-list .row span {
+    }}
+    .thread-list .row:last-child {{ border-bottom: none; }}
+    .thread-list .row span {{
       color: #666;
       font-size: 12px;
-    }
+    }}
 
-    .thread-title {
+    .thread-title {{
       font-size: 18px;
       font-weight: bold;
       border-bottom: 2px solid #ccc;
       margin-bottom: 8px;
-    }
+    }}
 
-    .post {
+    .post {{
       border-bottom: 1px dotted #999;
       padding: 6px 0;
       font-size: 14px;
-    }
-    .post-header {
+    }}
+    .post-header {{
       color: #008800;
       font-size: 12px;
-    }
-    .post-body {
+    }}
+    .post-body {{
       white-space: pre-wrap;
       line-height: 1.5;
-    }
+    }}
 
-    .post-form {
+    .post-form {{
       margin-top: 16px;
       border: 1px solid #ccc;
       background: #f9f9f9;
       padding: 8px;
       font-size: 14px;
-    }
-    .post-form label {
+    }}
+    .post-form label {{
       display: block;
       margin-top: 6px;
-    }
+    }}
     .post-form input,
-    .post-form textarea {
+    .post-form textarea {{
       width: 100%;
       box-sizing: border-box;
       font-family: inherit;
       margin-top: 2px;
-    }
+    }}
 
-    .new-thread-form {
+    .new-thread-form {{
       border: 1px solid #ccc;
       background: #f9f9f9;
       padding: 8px;
       font-size: 14px;
       margin-bottom: 16px;
-    }
-    .new-thread-form label {
+    }}
+    .new-thread-form label {{
       display: block;
       margin-top: 6px;
-    }
+    }}
     .new-thread-form input,
-    .new-thread-form textarea {
+    .new-thread-form textarea {{
       width: 100%;
       box-sizing: border-box;
       font-family: inherit;
       margin-top: 2px;
-    }
+    }}
 
-    footer {
+    footer {{
       text-align: center;
       font-size: 12px;
       color: #666;
       padding: 8px;
       border-top: 1px solid #ccc;
       background: #fafafa;
-    }
+    }}
 
-    .notice {
+    .notice {{
       background: #ffffe0;
       border: 1px solid #e0e0a0;
       padding: 6px;
       font-size: 13px;
       margin-bottom: 12px;
-    }
+    }}
 
-    .success {
+    .success {{
       background: #e0ffe0;
       border: 1px solid #a0e0a0;
       padding: 6px;
       font-size: 13px;
       margin-bottom: 12px;
-    }
+    }}
 
-    .pager {
+    .pager {{
       margin-top: 8px;
       font-size: 13px;
-    }
-    .pager a { margin-right: 4px; }
+    }}
+    .pager a {{ margin-right: 4px; }}
 
   </style>
 </head>
@@ -194,17 +195,15 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
   <aside>
     <h3>板一覧</h3>
     <div class="board-list">
-      {% for board_id, board_name in boards.items() %}
-      <div><a href="{{ url_for('board', board_id=board_id) }}">{{ board_name }}</a></div>
-      {% endfor %}
+      {''.join([f'<div><a href="/board/{board_id}">{board_name}</a></div>' for board_id, board_name in boards_dict.items()])}
     </div>
 
     <h3>メニュー</h3>
-    <div><a href="{{ url_for('index') }}">トップ</a></div>
+    <div><a href="/">トップ</a></div>
   </aside>
 
   <main>
-    {% block content %}{% endblock %}
+    {content}
   </main>
 </div>
 
@@ -215,91 +214,28 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
 </body>
 </html>'''
 
-INDEX_TEMPLATE = '''{% extends "base.html" %}
-{% block content %}
-<div class="notice">Pythonバックエンドで動作する匿名掲示板です</div>
-
-<h2>板一覧</h2>
-<div class="thread-list">
-  {% for board_id, board_name in boards.items() %}
-  <div class="row">
-    <a href="{{ url_for('board', board_id=board_id) }}">{{ board_name }}</a>
-    <span>({{ threads.get(board_id, [])|length }} スレッド)</span>
-  </div>
-  {% endfor %}
-</div>
-{% endblock %}'''
-
-BOARD_TEMPLATE = '''{% extends "base.html" %}
-{% block content %}
-{% if message %}
-<div class="success">{{ message }}</div>
-{% endif %}
-
-<h2>{{ board_name }}</h2>
-
-<div class="new-thread-form">
-  <strong>新規スレッド作成</strong>
-  <form method="POST" action="{{ url_for('create_thread', board_id=board_id) }}">
-    <label>スレッドタイトル</label>
-    <input type="text" name="title" required />
-    <label>名前(省略可)</label>
-    <input type="text" name="name" value="名無しさん" />
-    <label>本文</label>
-    <textarea name="body" rows="4" required></textarea>
-    <p><button type="submit">スレッドを立てる</button></p>
-  </form>
-</div>
-
-<h3>スレッド一覧</h3>
-<div class="thread-list">
-  {% if board_threads %}
-    {% for thread in board_threads %}
-    <div class="row">
-      <a href="{{ url_for('thread', board_id=board_id, thread_id=thread.id) }}">{{ thread.title }}</a>
-      <span>({{ thread.post_count }})</span>
-    </div>
-    {% endfor %}
-  {% else %}
-    <div class="row">スレッドがありません</div>
-  {% endif %}
-</div>
-{% endblock %}'''
-
-THREAD_TEMPLATE = '''{% extends "base.html" %}
-{% block content %}
-{% if message %}
-<div class="success">{{ message }}</div>
-{% endif %}
-
-<p><a href="{{ url_for('board', board_id=board_id) }}">← {{ board_name }}に戻る</a></p>
-
-<div class="thread-title">{{ thread.title }}</div>
-
-{% for post in thread_posts %}
-<div class="post">
-  <div class="post-header">{{ post.id }} :{{ post.name }}:{{ post.date }}</div>
-  <div class="post-body">{{ post.body }}</div>
-</div>
-{% endfor %}
-
-<div class="post-form">
-  <strong>書き込みフォーム</strong>
-  <form method="POST" action="{{ url_for('create_post', board_id=board_id, thread_id=thread_id) }}">
-    <label>名前(省略可)</label>
-    <input type="text" name="name" value="名無しさん" />
-    <label>本文</label>
-    <textarea name="body" rows="4" required></textarea>
-    <p><button type="submit">書き込む</button></p>
-  </form>
-</div>
-
-{% endblock %}'''
-
 @app.route('/')
 def index():
-    return render_template_string(HTML_TEMPLATE.replace('{% block content %}{% endblock %}', INDEX_TEMPLATE), 
-                                 boards=boards, threads=threads)
+    thread_list_html = ''
+    for board_id, board_name in boards.items():
+        thread_count = len(threads.get(board_id, []))
+        thread_list_html += f'''
+        <div class="row">
+          <a href="/board/{board_id}">{board_name}</a>
+          <span>({thread_count} スレッド)</span>
+        </div>
+        '''
+    
+    content = f'''
+    <div class="notice">Pythonバックエンドで動作する匿名掲示板です</div>
+    
+    <h2>板一覧</h2>
+    <div class="thread-list">
+      {thread_list_html}
+    </div>
+    '''
+    
+    return render_page(content, boards)
 
 @app.route('/board/<board_id>')
 def board(board_id):
@@ -310,13 +246,45 @@ def board(board_id):
     board_threads = threads.get(board_id, [])
     message = request.args.get('message')
     
-    template = HTML_TEMPLATE.replace('{% block content %}{% endblock %}', BOARD_TEMPLATE)
-    return render_template_string(template, 
-                                 boards=boards,
-                                 board_id=board_id,
-                                 board_name=board_name,
-                                 board_threads=board_threads,
-                                 message=message)
+    message_html = f'<div class="success">{message}</div>' if message else ''
+    
+    thread_list_html = ''
+    if board_threads:
+        for thread in board_threads:
+            thread_list_html += f'''
+            <div class="row">
+              <a href="/board/{board_id}/thread/{thread['id']}">{thread['title']}</a>
+              <span>({thread['post_count']})</span>
+            </div>
+            '''
+    else:
+        thread_list_html = '<div class="row">スレッドがありません</div>'
+    
+    content = f'''
+    {message_html}
+    
+    <h2>{board_name}</h2>
+    
+    <div class="new-thread-form">
+      <strong>新規スレッド作成</strong>
+      <form method="POST" action="/board/{board_id}/create_thread">
+        <label>スレッドタイトル</label>
+        <input type="text" name="title" required />
+        <label>名前(省略可)</label>
+        <input type="text" name="name" value="名無しさん" />
+        <label>本文</label>
+        <textarea name="body" rows="4" required></textarea>
+        <p><button type="submit">スレッドを立てる</button></p>
+      </form>
+    </div>
+    
+    <h3>スレッド一覧</h3>
+    <div class="thread-list">
+      {thread_list_html}
+    </div>
+    '''
+    
+    return render_page(content, boards)
 
 @app.route('/board/<board_id>/thread/<int:thread_id>')
 def thread(board_id, thread_id):
@@ -333,15 +301,39 @@ def thread(board_id, thread_id):
     thread_posts = posts.get(thread_id, [])
     message = request.args.get('message')
     
-    template = HTML_TEMPLATE.replace('{% block content %}{% endblock %}', THREAD_TEMPLATE)
-    return render_template_string(template,
-                                 boards=boards,
-                                 board_id=board_id,
-                                 board_name=board_name,
-                                 thread=thread_obj,
-                                 thread_id=thread_id,
-                                 thread_posts=thread_posts,
-                                 message=message)
+    message_html = f'<div class="success">{message}</div>' if message else ''
+    
+    posts_html = ''
+    for post in thread_posts:
+        posts_html += f'''
+        <div class="post">
+          <div class="post-header">{post['id']} :{post['name']}:{post['date']}</div>
+          <div class="post-body">{post['body']}</div>
+        </div>
+        '''
+    
+    content = f'''
+    {message_html}
+    
+    <p><a href="/board/{board_id}">← {board_name}に戻る</a></p>
+    
+    <div class="thread-title">{thread_obj['title']}</div>
+    
+    {posts_html}
+    
+    <div class="post-form">
+      <strong>書き込みフォーム</strong>
+      <form method="POST" action="/board/{board_id}/thread/{thread_id}/post">
+        <label>名前(省略可)</label>
+        <input type="text" name="name" value="名無しさん" />
+        <label>本文</label>
+        <textarea name="body" rows="4" required></textarea>
+        <p><button type="submit">書き込む</button></p>
+      </form>
+    </div>
+    '''
+    
+    return render_page(content, boards)
 
 @app.route('/board/<board_id>/create_thread', methods=['POST'])
 def create_thread(board_id):
