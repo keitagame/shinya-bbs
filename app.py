@@ -1,9 +1,9 @@
-from flask import Flask, render_template_string, request, redirect, url_for
+from flask import Flask, render_template_string, request, redirect, url_for, session
 from datetime import datetime
 import os
 
 app = Flask(__name__)
-
+app.secret_key = "shinya-bbs-secret-key"
 # データを保存する簡易データベース(本番環境ではSQLiteやPostgreSQLを使用)
 boards = {
     'news': 'ニュース速報',
@@ -200,6 +200,7 @@ def render_page(content, boards_dict):
 
     <h3>メニュー</h3>
     <div><a href="/">トップ</a></div>
+    <div><a href="/entrance">入口へ</a></div>
   </aside>
 
   <main>
@@ -216,6 +217,8 @@ def render_page(content, boards_dict):
 
 @app.route('/')
 def index():
+    if not session.get('entered'):
+        return redirect(url_for('entrance'))
     thread_list_html = ''
     for board_id, board_name in boards.items():
         thread_count = len(threads.get(board_id, []))
@@ -227,7 +230,7 @@ def index():
         '''
     
     content = f'''
-    <div class="notice">Pythonバックエンドで動作する匿名掲示板です</div>
+    <div class="notice">深夜テンションの猫が集まる匿名掲示板です</div>
     
     <h2>板一覧</h2>
     <div class="thread-list">
@@ -235,6 +238,29 @@ def index():
     </div>
     '''
     
+    return render_page(content, boards)
+@app.route('/entrance', methods=['GET', 'POST'])
+def entrance():
+    if request.method == 'POST':
+        session['entered'] = True
+        return redirect(url_for('index'))
+
+    content = '''
+    <div class="notice">
+      <strong>SHINYA BBSへようこそ</strong><br><br>
+      この掲示板は匿名掲示板です。<br>
+      誹謗中傷・違法行為は禁止されています。<br>
+      書き込み内容は自己責任でお願いします。
+    </div>
+
+    <form method="POST">
+      <p style="text-align:center;">
+        <button type="submit" style="font-size:16px;padding:8px 24px;">
+          同意して入場する
+        </button>
+      </p>
+    </form>
+    '''
     return render_page(content, boards)
 
 @app.route('/board/<board_id>')
