@@ -15,16 +15,16 @@ boards = {
 
 threads = {
     'chat': [
-        {'id': 1, 'title': '【雑談】今日何してた?', 'post_count': 2},
-        {'id': 2, 'title': '【質問】JavaScriptわからん', 'post_count': 0},
-        {'id': 3, 'title': '【速報】新作ゲーム発表', 'post_count': 0}
+        {'id': 1, 'title': '【雑談】サンプル', 'post_count': 2},
+        {'id': 2, 'title': '【質問】サンプル', 'post_count': 0},
+        {'id': 3, 'title': '【速報】サンプル', 'post_count': 0}
     ]
 }
 
 posts = {
     1: [
-        {'id': 1, 'name': '名無しさん', 'body': 'UIだけの掲示板作ってる', 'date': '2026/02/09'},
-        {'id': 2, 'name': '名無しさん', 'body': 'JSなしなの逆に渋い', 'date': '2026/02/09'}
+        {'id': 1, 'name': '名無しさん', 'body': 'サンプル', 'date': '2026/02/09'},
+        {'id': 2, 'name': '名無しさん', 'body': 'サンプル', 'date': '2026/02/09'}
     ]
 }
 
